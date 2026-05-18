@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Trilochan</title>
+    <link href="./css/style.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased flex flex-col min-h-screen">
+
+    <header class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md sticky top-0 z-50">
+        <h1 class="text-xl font-black text-teal-400">TRILOCHAN PANEL</h1>
+        <div class="flex items-center gap-4">
+            <span id="header-id" class="text-xs bg-slate-800 px-3 py-1.5 rounded-md font-mono text-teal-300">Loading...</span>
+            <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded">Logout</button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12 flex-grow max-w-2xl">
+        
+        <div id="loader" class="text-center py-20 text-teal-600 font-bold animate-pulse">
+            Fetching Your Profile Details...
+        </div>
+
+        <div id="profile-card" class="hidden bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden p-8">
+            <div class="flex items-center gap-6 border-b pb-6 mb-6">
+                <img id="d-photo" src="./images/logo.png" class="w-24 h-24 object-cover rounded-full border-4 border-slate-100 shadow-sm" alt="Profile">
+                <div>
+                    <h2 id="d-name" class="text-2xl font-black text-slate-900">Name</h2>
+                    <p id="d-role-badge" class="text-sm font-bold text-teal-600 uppercase tracking-widest mt-1">Role</p>
+                </div>
+            </div>
+
+            <div id="d-details" class="grid sm:grid-cols-2 gap-y-4 gap-x-8">
+                </div>
+        </div>
+
+    </main>
+
+    <div id="footer-container"></div>
+    <script src="components.js"></script>
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, signOut, doc, getDoc } from "./firebase-config.js";
+
+        // Protect Page
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "auth.html"; // Redirect if not logged in
+            } else {
+                fetchUserData(user.uid);
+            }
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.href = "auth.html");
+        });
+
+        async function fetchUserData(uid) {
+            try {
+                // First check in workers collection
+                let docSnap = await getDoc(doc(db, "workers", uid));
+                let isWorker = true;
+
+                // If not found in workers, check in companys collection
+                if (!docSnap.exists()) {
+                    docSnap = await getDoc(doc(db, "companys", uid));
+                    isWorker = false;
+                }
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    document.getElementById('header-id').innerText = `ID: ${data.trilochanId}`;
+                    document.getElementById('d-name').innerText = data.name;
+                    document.getElementById('d-role-badge').innerText = isWorker ? `Worker - ${data.type}` : "Company Profile";
+                    
+                    if(isWorker && data.photoBase64) {
+                        document.getElementById('d-photo').src = data.photoBase64;
+                    } else if (!isWorker) {
+                        document.getElementById('d-photo').classList.add('hidden'); // Hide img for company
+                    }
+
+                    const detailsContainer = document.getElementById('d-details');
+                    detailsContainer.innerHTML = ""; // Clear existing
+
+                    // Render Fields dynamically
+                    const appendField = (label, value) => {
+                        detailsContainer.innerHTML += `
+                            <div>
+                                <span class="block text-xs font-bold text-slate-400 uppercase">${label}</span>
+                                <span class="block text-sm font-semibold text-slate-800">${value}</span>
+                            </div>`;
+                    };
+
+                    appendField("Phone Number", data.phone);
+                    
+                    if (isWorker) {
+                        appendField("Aadhaar Number", data.aadhaar);
+                        appendField("Age", data.age + " Years");
+                        if(data.type !== 'unskilled') {
+                            appendField("Primary Skill", data.skill);
+                            appendField("Experience", data.experience + " Years");
+                        }
+                    } else {
+                        appendField("Email Address", data.email);
+                        appendField("Job Request Type", data.jobType);
+                    }
+
+                    document.getElementById('loader').classList.add('hidden');
+                    document.getElementById('profile-card').classList.remove('hidden');
+
+                } else {
+                    alert("Profile data not found. Please create a new account.");
+                    await signOut(auth);
+                    window.location.href = "auth.html";
+                }
+            } catch (error) {
+                console.error("Error fetching document:", error);
+                document.getElementById('loader').innerText = "Error loading profile.";
+            }
+        }
+    </script>
+</body>
+</html>

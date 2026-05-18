@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Agar aap custom font add karna chahte hain toh yahan kar sakte hain */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin Control - Trilochan</title>
+    <link href="./css/style.css" rel="stylesheet">
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased flex flex-col min-h-screen">
+
+    <header class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
+        <h1 class="text-xl font-black text-amber-400 tracking-wider">TRILOCHAN SYSTEM ADMIN</h1>
+        <button id="admin-logout" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded">Exit Terminal</button>
+    </header>
+
+    <main class="container mx-auto px-4 py-10 flex-grow max-w-6xl">
+        
+        <div class="flex flex-wrap gap-3 mb-8">
+            <button id="toggle-w-view" onclick="changeAdminTab('workers')" class="bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm">Registered Workers</button>
+            <button id="toggle-c-view" onclick="changeAdminTab('companies')" class="bg-white text-slate-700 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm">Registered Companies</button>
+            <button id="toggle-r-view" onclick="changeAdminTab('reports')" class="bg-white text-red-600 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm">⚠️ Issue Reports</button>
+        </div>
+
+        <div id="admin-loader" class="text-center py-12 text-slate-500 font-bold animate-pulse">Running Cloud Verification Diagnostics...</div>
+
+        <div id="workers-grid-box" class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-6" id="workers-cards-target"></div>
+        </div>
+
+        <div id="companies-table-box" class="hidden bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                            <th class="p-4">ID</th>
+                            <th class="p-4">Company Name</th>
+                            <th class="p-4">Contact</th>
+                            <th class="p-4">Location</th>
+                            <th class="p-4">Stream Preference</th>
+                        </tr>
+                    </thead>
+                    <tbody id="companies-table-target" class="text-sm font-medium text-slate-700 divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="reports-grid-box" class="hidden grid sm:grid-cols-2 gap-6">
+            </div>
+
+    </main>
+
+    <div id="footer-container"></div>
+    <script src="components.js"></script>
+
+    <script>
+        window.changeAdminTab = function(targetTab) {
+            const btnW = document.getElementById('toggle-w-view');
+            const btnC = document.getElementById('toggle-c-view');
+            const btnR = document.getElementById('toggle-r-view');
+            const boxW = document.getElementById('workers-grid-box');
+            const boxC = document.getElementById('companies-table-box');
+            const boxR = document.getElementById('reports-grid-box');
+
+            // Reset tab highlights
+            btnW.className = btnC.className = btnR.className = "bg-white text-slate-700 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm";
+            boxW.classList.add('hidden'); boxC.classList.add('hidden'); boxR.classList.add('hidden');
+
+            if(targetTab === 'workers') {
+                btnW.className = "bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm";
+                boxW.classList.remove('hidden');
+            } else if(targetTab === 'companies') {
+                btnC.className = "bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm";
+                boxC.classList.remove('hidden');
+            } else {
+                btnR.className = "bg-red-600 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-red-700 text-sm";
+                boxR.classList.remove('hidden');
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, signOut, doc, getDoc, collection, getDocs } from "./firebase-config.js";
+
+        // VERIFICATION ROUTE GUARD SYSTEM
+        onAuthStateChanged(auth, async (user) => {
+            if(!user) {
+                window.location.href = "auth.html";
+                return;
+            }
+
+            try {
+                // 1. Verify if present in master admins collection
+                const adminCheck = await getDoc(doc(db, "admins", user.uid));
+                if(adminCheck.exists()) {
+                    // Valid Admin. Proceed to fetch database records
+                    loadSystemData();
+                } else {
+                    // 2. Not an Admin. Check if user belongs to workers or companies to bounce them back to dashboard
+                    const workerCheck = await getDoc(doc(db, "workers", user.uid));
+                    const companyCheck = await getDoc(doc(db, "companys", user.uid));
+
+                    if(workerCheck.exists() || companyCheck.exists()) {
+                        alert("Access Denied: Redirecting to your personal account dashboard.");
+                        window.location.href = "dashboard.html";
+                    } else {
+                        // Dead Account reference clean fallback
+                        alert("Unauthorized Session context.");
+                        await signOut(auth);
+                        window.location.href = "auth.html";
+                    }
+                }
+            } catch (err) {
+                alert("Security handshake failure: " + err.message);
+                window.location.href = "auth.html";
+            }
+        });
+
+        document.getElementById('admin-logout').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.href = "auth.html");
+        });
+
+        async function loadSystemData() {
+            try {
+                // Fetch Workers Group Array
+                const wSnap = await getDocs(collection(db, "workers"));
+                const workersTarget = document.getElementById('workers-cards-target');
+                workersTarget.innerHTML = "";
+                wSnap.forEach(doc => {
+                    const w = doc.data();
+                    workersTarget.innerHTML += `
+                        <div class="bg-white rounded-xl shadow border border-slate-200 p-5 flex gap-4 items-start">
+                            <img src="${w.photoBase64 || 'https://via.placeholder.com/150?text=No+Photo'}" class="w-20 h-20 rounded-lg object-cover border bg-slate-100 shrink-0">
+                            <div class="space-y-1 min-w-0 w-full">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-bold text-slate-900 truncate">${w.name}</h4>
+                                    <span class="text-[10px] bg-slate-100 font-mono text-teal-700 px-2 py-0.5 rounded border border-slate-200 font-bold">${w.trilochanId}</span>
+                                </div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">${w.type} • Age: ${w.age}</p>
+                                <p class="text-xs text-slate-600 truncate"><strong>Location:</strong> ${w.address || 'N/A'}</p>
+                                <div class="text-xs text-slate-700 grid grid-cols-2 gap-1 pt-1 border-t border-slate-100 mt-2">
+                                    <p><strong>Phone:</strong> ${w.phone}</p>
+                                    <p class="truncate"><strong>Skill:</strong> ${w.skill}</p>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+
+                // Fetch Companies Group Array
+                const cSnap = await getDocs(collection(db, "companys"));
+                const companiesTarget = document.getElementById('companies-table-target');
+                companiesTarget.innerHTML = "";
+                cSnap.forEach(doc => {
+                    const c = doc.data();
+                    companiesTarget.innerHTML += `
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="p-4 font-mono text-xs text-teal-700 font-bold">${c.trilochanId}</td>
+                            <td class="p-4 font-bold text-slate-900">${c.name}</td>
+                            <td class="p-4 text-xs space-y-0.5">
+                                <p><strong>P:</strong> ${c.phone}</p>
+                                <p><strong>E:</strong> ${c.email}</p>
+                            </td>
+                            <td class="p-4 text-xs max-w-xs truncate">${c.address || 'N/A'}</td>
+                            <td class="p-4 text-xs"><span class="bg-slate-100 px-2 py-1 rounded text-slate-600 border border-slate-200 font-bold uppercase">${c.jobType}</span></td>
+                        </tr>`;
+                });
+
+                // FETCH USER REPORTS ARRAY
+                const rSnap = await getDocs(collection(db, "reports"));
+                const reportsTarget = document.getElementById('reports-grid-box');
+                reportsTarget.innerHTML = "";
+                rSnap.forEach(doc => {
+                    const r = doc.data();
+                    const formattedDate = r.timestamp ? new Date(r.timestamp).toLocaleString() : "N/A";
+                    reportsTarget.innerHTML += `
+                        <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-red-500 relative">
+                            <span class="absolute top-4 right-4 text-[10px] font-mono text-slate-400 font-bold">${r.reportId}</span>
+                            <h4 class="text-sm font-black text-slate-900 uppercase tracking-wide mb-1">From: ${r.contact}</h4>
+                            <p class="text-slate-400 text-[10px] font-semibold mb-3">${formattedDate}</p>
+                            <p class="bg-slate-50 p-3 rounded-xl border text-sm text-slate-700 font-medium leading-relaxed">${r.message}</p>
+                        </div>`;
+                });
+
+                document.getElementById('admin-loader').classList.add('hidden');
+
+            } catch (err) {
+                document.getElementById('admin-loader').innerText = "Data fetch failure: " + err.message;
+            }
+        }
+    </script>
+</body>
+</html>
