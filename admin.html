@@ -19,6 +19,7 @@
             <button id="toggle-w-view" onclick="changeAdminTab('workers')" class="bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm">Registered Workers</button>
             <button id="toggle-c-view" onclick="changeAdminTab('companies')" class="bg-white text-slate-700 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm">Registered Companies</button>
             <button id="toggle-r-view" onclick="changeAdminTab('reports')" class="bg-white text-red-600 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm">⚠️ Issue Reports</button>
+            <button id="toggle-add-worker" onclick="changeAdminTab('add-worker')" class="bg-white text-teal-600 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm">➕ Add New Worker</button>
         </div>
 
         <div id="admin-loader" class="text-center py-12 text-slate-500 font-bold animate-pulse">Running Cloud Verification Diagnostics...</div>
@@ -44,8 +45,35 @@
             </div>
         </div>
 
-        <div id="reports-grid-box" class="hidden grid sm:grid-cols-2 gap-6">
-            </div>
+        <div id="reports-grid-box" class="hidden grid sm:grid-cols-2 gap-6"></div>
+
+        <div id="add-worker-box" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-slate-100 max-w-2xl mx-auto">
+            <h2 class="text-2xl font-black text-slate-900 mb-6 text-center">Add New Worker</h2>
+            <form id="add-worker-form" class="space-y-4">
+                <input type="text" id="worker-name" placeholder="Worker Name" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
+                <input type="tel" id="worker-phone" placeholder="Phone Number" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
+                <input type="number" id="worker-age" placeholder="Age" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
+                <input type="text" id="worker-skill" placeholder="Skill (e.g., Electrician, Plumber)" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
+                <textarea id="worker-address" rows="3" placeholder="Address" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50"></textarea>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="worker-photo" class="block text-xs font-bold text-slate-500 uppercase mb-1">Worker Photo</label>
+                        <input type="file" id="worker-photo" accept="image/*" class="w-full border rounded-xl px-4 py-2.5 text-sm bg-slate-50 focus:outline-teal-500">
+                        <img id="worker-photo-preview" src="#" alt="Photo Preview" class="mt-2 hidden w-24 h-24 object-cover rounded-lg">
+                    </div>
+                    <div>
+                        <label for="worker-aadhaar" class="block text-xs font-bold text-slate-500 uppercase mb-1">Aadhaar Card (Front)</label>
+                        <input type="file" id="worker-aadhaar" accept="image/*,application/pdf" class="w-full border rounded-xl px-4 py-2.5 text-sm bg-slate-50 focus:outline-teal-500">
+                        <img id="worker-aadhaar-preview" src="#" alt="Aadhaar Preview" class="mt-2 hidden w-24 h-24 object-cover rounded-lg">
+                    </div>
+                </div>
+                
+                <button type="submit" id="add-worker-submit-btn" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3.5 rounded-xl shadow-md transition-colors uppercase tracking-wide text-sm">
+                    Add Worker
+                </button>
+            </form>
+        </div>
 
     </main>
 
@@ -53,17 +81,37 @@
     <script src="components.js"></script>
 
     <script>
+        // Function to handle file preview
+        function setupFilePreview(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            input.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                    preview.classList.add('hidden');
+                }
+            });
+        }
+
         window.changeAdminTab = function(targetTab) {
             const btnW = document.getElementById('toggle-w-view');
             const btnC = document.getElementById('toggle-c-view');
             const btnR = document.getElementById('toggle-r-view');
+            const btnAW = document.getElementById('toggle-add-worker');
             const boxW = document.getElementById('workers-grid-box');
             const boxC = document.getElementById('companies-table-box');
             const boxR = document.getElementById('reports-grid-box');
+            const boxAW = document.getElementById('add-worker-box');
 
             // Reset tab highlights
-            btnW.className = btnC.className = btnR.className = "bg-white text-slate-700 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm";
-            boxW.classList.add('hidden'); boxC.classList.add('hidden'); boxR.classList.add('hidden');
+            btnW.className = btnC.className = btnR.className = btnAW.className = "bg-white text-slate-700 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm";
+            boxW.classList.add('hidden'); boxC.classList.add('hidden'); boxR.classList.add('hidden'); boxAW.classList.add('hidden');
 
             if(targetTab === 'workers') {
                 btnW.className = "bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm";
@@ -71,9 +119,12 @@
             } else if(targetTab === 'companies') {
                 btnC.className = "bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm";
                 boxC.classList.remove('hidden');
-            } else {
+            } else if(targetTab === 'reports') {
                 btnR.className = "bg-red-600 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-red-700 text-sm";
                 boxR.classList.remove('hidden');
+            } else if(targetTab === 'add-worker') {
+                btnAW.className = "bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm";
+                boxAW.classList.remove('hidden');
             }
         }
     </script>
@@ -184,6 +235,9 @@
 
             } catch (err) {
                 document.getElementById('admin-loader').innerText = "Data fetch failure: " + err.message;
+            } finally {
+                setupFilePreview('worker-photo', 'worker-photo-preview');
+                setupFilePreview('worker-aadhaar', 'worker-aadhaar-preview');
             }
         }
     </script>

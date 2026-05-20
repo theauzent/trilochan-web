@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Trilochan Manpower Supply</title>
+    <link href="./css/style.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased flex flex-col min-h-screen">
+
+    <div id="header-container"></div>
+
+    <main class="flex-grow container mx-auto px-6 py-16 max-w-4xl">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-black text-slate-900 uppercase tracking-tight">Contact Us</h1>
+            <p class="text-slate-500 mt-2">We are here to help you with your manpower needs.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-12">
+            <div class="space-y-8">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold text-teal-700 uppercase tracking-wider mb-2">Our Office</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        Trilochan Manpower Supply Branch Office,<br>
+                        Main Road, Patna, Bihar, India - 800001
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold text-teal-700 uppercase tracking-wider mb-2">Call & Email</h3>
+                    <p class="text-slate-600">Email: support@trilochan.com</p>
+                </div>
+            </div>
+
+            <form id="contact-form" class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 space-y-4">
+                <input type="text" id="contact-name" placeholder="Full Name" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
+                <input type="email" id="contact-email" placeholder="Email Address" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
+                <textarea id="contact-message" rows="4" placeholder="How can we help you?" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50"></textarea>
+                <button type="submit" id="contact-submit-btn" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3.5 rounded-xl shadow-md transition-colors uppercase tracking-wide text-sm">
+                    Send Message
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+    <script src="components.js"></script>
+
+</body>
+</html>
