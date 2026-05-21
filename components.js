@@ -2,7 +2,7 @@
 
 const headerCode = `
     <div class="bg-amber-500 text-white text-center text-sm py-1.5 font-medium">
-        Website under development. For urgent queries, please email us directly.
+        Website under development. For urgent queries, please email us at <a href="mailto:companytrilochan@gmail.com" class="underline hover:opacity-90 font-bold transition-opacity">companytrilochan@gmail.com</a>.
     </div>
     <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-slate-100">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -33,6 +33,7 @@ const footerCode = `
                     <h2 class="text-xl font-black text-slate-200 tracking-tight">TRILOCHAN</h2>
                 </div>
                 <p class="text-sm font-medium text-slate-500">&copy; 2026 Trilochan Manpower Supply. All rights reserved.</p>
+                <p class="text-[11px] text-slate-600 mt-1 italic">Our physical office is currently under construction. The location will be updated here once it is ready.</p>
                 <div class="text-xs space-x-4 mt-2">
                     <a href="about.html" class="hover:text-teal-400 transition-colors">About Us</a>
                     <a href="privacy-policy.html" class="hover:text-teal-400 transition-colors">Privacy Policy</a>

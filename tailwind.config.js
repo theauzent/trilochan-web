@@ -10,7 +10,7 @@ module.exports = {
         'brand-light': '#f8fafc',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'], // Aap chaho to Google Fonts se Inter font link kar sakte ho HTML me
+        sans: ['Inter', 'sans-serif'], // You can link the Inter font from Google Fonts in your HTML if desired
       }
     },
   },
