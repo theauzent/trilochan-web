@@ -1,115 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Access - Trilochan</title>
     <link href="./css/style.css" rel="stylesheet">
 </head>
+
 <body class="bg-slate-50 text-slate-800 antialiased flex flex-col min-h-screen">
 
     <div id="header-container"></div>
 
     <main class="flex-grow flex items-center justify-center py-12 px-4">
         <div class="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
-            
+
             <div class="text-center mb-8">
                 <h2 id="auth-title" class="text-3xl font-black text-slate-900 tracking-tight">Welcome Back</h2>
                 <p id="auth-subtitle" class="text-slate-500 text-sm mt-1">Login to access your workforce portal</p>
             </div>
 
             <div class="flex bg-slate-100 p-1 rounded-xl mb-6 border border-slate-200">
-                <button id="tab-login" onclick="switchTab('login')" class="flex-1 py-2.5 rounded-lg font-bold text-sm text-teal-800 bg-white shadow-sm transition-all">Login</button>
-                <button id="tab-register" onclick="switchTab('register')" class="flex-1 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:text-slate-800 transition-all bg-transparent">Register</button>
+                <button id="tab-login" onclick="switchTab('login')"
+                    class="flex-1 py-2.5 rounded-lg font-bold text-sm text-teal-800 bg-white shadow-sm transition-all">Login</button>
+                <button id="tab-register" onclick="switchTab('register')"
+                    class="flex-1 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:text-slate-800 transition-all bg-transparent">Register</button>
             </div>
 
             <div id="account-type-box" class="hidden mb-5">
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">I want to join as:</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">I want to join
+                    as:</label>
                 <div class="grid grid-cols-2 gap-3">
-                    <label class="border border-slate-200 bg-slate-50 rounded-xl p-3 flex items-center justify-center gap-2 cursor-pointer transition-colors hover:border-teal-500">
-                        <input type="radio" name="role" value="worker" checked onchange="toggleRoleFields()" class="accent-teal-600">
+                    <label
+                        class="border border-slate-200 bg-slate-50 rounded-xl p-3 flex items-center justify-center gap-2 cursor-pointer transition-colors hover:border-teal-500">
+                        <input type="radio" name="role" value="worker" checked onchange="toggleRoleFields()"
+                            class="accent-teal-600">
                         <span class="text-sm font-bold text-slate-700">Worker</span>
                     </label>
-                    <label class="border border-slate-200 bg-slate-50 rounded-xl p-3 flex items-center justify-center gap-2 cursor-pointer transition-colors hover:border-teal-500">
-                        <input type="radio" name="role" value="company" onchange="toggleRoleFields()" class="accent-teal-600">
+                    <label
+                        class="border border-slate-200 bg-slate-50 rounded-xl p-3 flex items-center justify-center gap-2 cursor-pointer transition-colors hover:border-teal-500">
+                        <input type="radio" name="role" value="company" onchange="toggleRoleFields()"
+                            class="accent-teal-600">
                         <span class="text-sm font-bold text-slate-700">Company</span>
                     </label>
                 </div>
             </div>
 
             <form id="auth-form" class="space-y-4">
-                
+
                 <div id="worker-fields" class="hidden space-y-4">
-                    <input type="text" id="w-name" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Full Name">
-                    <input type="tel" id="w-phone" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Mobile Number">
-                    <input type="text" id="w-aadhaar" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Aadhaar Number">
-                    <input type="number" id="w-age" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Age">
-                    
+                    <input type="text" id="w-name"
+                        class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                        placeholder="Full Name">
+                    <input type="tel" id="w-phone"
+                        class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                        placeholder="Mobile Number">
+                    <input type="text" id="w-aadhaar"
+                        class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                        placeholder="Aadhaar Number">
+                    <input type="number" id="w-age"
+                        class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                        placeholder="Age">
+
                     <div class="relative">
-                        <textarea id="w-address" rows="2" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Full Address / Location (Type or Click Auto Detect)"></textarea>
-                        <button type="button" onclick="autoGetLocation('w-address', 'btn-w-loc-text')" class="absolute bottom-2 right-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-[10px] uppercase font-bold px-3 py-1.5 rounded transition-colors flex items-center gap-1 shadow-sm">
+                        <textarea id="w-address" rows="2"
+                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                            placeholder="Full Address / Location (Type or Click Auto Detect)"></textarea>
+                        <button type="button" onclick="autoGetLocation('w-address', 'btn-w-loc-text')"
+                            class="absolute bottom-2 right-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-[10px] uppercase font-bold px-3 py-1.5 rounded transition-colors flex items-center gap-1 shadow-sm">
                             📍 <span id="btn-w-loc-text">Auto Location</span>
                         </button>
                     </div>
 
-                    <select id="w-type" onchange="toggleSkills()" class="w-full border rounded-xl px-4 py-3 text-sm bg-white focus:outline-teal-500">
+                    <select id="w-type" onchange="toggleSkills()"
+                        class="w-full border rounded-xl px-4 py-3 text-sm bg-white focus:outline-teal-500">
                         <option value="unskilled">Unskilled (Helper, General Duties)</option>
                         <option value="semi-skilled">Semi-Skilled</option>
                         <option value="skilled">Skilled</option>
                     </select>
 
                     <div id="skill-exp-box" class="hidden space-y-4">
-                        <input type="text" id="w-skill" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Your Primary Skills (e.g., Electrician, Heavy Driver)">
-                        <input type="text" id="w-exp" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Experience (in Years)">
+                        <input type="text" id="w-skill"
+                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                            placeholder="Your Primary Skills (e.g., Electrician, Heavy Driver)">
+                        <input type="text" id="w-exp"
+                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                            placeholder="Experience (in Years)">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Upload Profiling Identification Photo</label>
-                        <input type="file" id="w-photo" accept="image/*" capture="environment" class="w-full border rounded-xl px-4 py-2.5 bg-slate-50 text-xs text-slate-500">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Upload
+                            Profiling Identification Photo</label>
+                        <input type="file" id="w-photo" accept="image/*" capture="environment"
+                            class="w-full border rounded-xl px-4 py-2.5 bg-slate-50 text-xs text-slate-500">
                         <input type="hidden" id="w-photo-base64">
                     </div>
                 </div>
 
                 <div id="company-fields" class="hidden space-y-4">
-                    <input type="text" id="c-name" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Company / Enterprise Name">
-                    <input type="email" id="c-email" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Corporate Email Address">
-                    <input type="tel" id="c-phone" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Mobile Number">
-                    
+                    <input type="text" id="c-name"
+                        class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                        placeholder="Company / Enterprise Name">
+                    <input type="email" id="c-email"
+                        class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                        placeholder="Corporate Email Address">
+                    <input type="tel" id="c-phone"
+                        class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                        placeholder="Mobile Number">
+
                     <div class="relative">
-                        <textarea id="c-address" rows="2" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Enterprise Location Address"></textarea>
-                        <button type="button" onclick="autoGetLocation('c-address', 'btn-c-loc-text')" class="absolute bottom-2 right-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-[10px] uppercase font-bold px-3 py-1.5 rounded transition-colors flex items-center gap-1 shadow-sm">
+                        <textarea id="c-address" rows="2"
+                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                            placeholder="Enterprise Location Address"></textarea>
+                        <button type="button" onclick="autoGetLocation('c-address', 'btn-c-loc-text')"
+                            class="absolute bottom-2 right-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-[10px] uppercase font-bold px-3 py-1.5 rounded transition-colors flex items-center gap-1 shadow-sm">
                             📍 <span id="btn-c-loc-text">Auto Location</span>
                         </button>
                     </div>
 
-                    <select id="c-jobtype" class="w-full border rounded-xl px-4 py-3 text-sm bg-white focus:outline-teal-500">
+                    <select id="c-jobtype"
+                        class="w-full border rounded-xl px-4 py-3 text-sm bg-white focus:outline-teal-500">
                         <option value="permanent">Placement Service (Long-Term Permanent Need)</option>
                         <option value="limited">On-Demand (Short-Term Project Requirement)</option>
                     </select>
                 </div>
 
                 <div id="login-fields">
-                    <input type="text" id="login-id" maxlength="12" class="w-full border rounded-xl px-4 py-3 text-sm tracking-widest uppercase focus:outline-teal-500 bg-slate-50/50 font-semibold" placeholder="12-DIGIT SYSTEM ID (e.g., TRIL89A2C3E4)">
+                    <input type="text" id="login-id" maxlength="12"
+                        class="w-full border rounded-xl px-4 py-3 text-sm tracking-widest uppercase focus:outline-teal-500 bg-slate-50/50 font-semibold"
+                        placeholder="12-DIGIT SYSTEM ID (e.g., TRIL89A2C3E4)">
                 </div>
 
-                <div>
-                    <input type="password" id="auth-password" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50/50" placeholder="Password (Minimum 6 characters)" required>
+                <div class="relative">
+                    <input type="password" id="auth-password"
+                        class="w-full border rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-teal-500 bg-slate-50/50"
+                        placeholder="Password (Minimum 6 characters)" required>
+                    <button type="button" onclick="toggleAuthPassword()"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm font-bold">
+                        <span id="eye-icon-auth">👁️</span>
+                    </button>
                 </div>
 
                 <div id="forgot-pass-box" class="text-right">
-                    <button type="button" onclick="alert('Please contact Support with your Registered Mobile Number to reset security credentials.')" class="text-xs text-teal-600 font-bold hover:underline">Forgot Password?</button>
+                    <button type="button"
+                        onclick="showToast('Please contact Support with your Registered Mobile Number to reset security credentials.', 'error')"
+                        class="text-xs text-teal-600 font-bold hover:underline">Forgot Password?</button>
                 </div>
 
-                <button type="submit" id="submit-btn" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3.5 rounded-xl shadow-md mt-2 transition-colors text-sm uppercase tracking-wide">Sign In</button>
+                <button type="submit" id="submit-btn"
+                    class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3.5 rounded-xl shadow-md mt-2 transition-colors text-sm uppercase tracking-wide">Sign
+                    In</button>
             </form>
 
-            <div id="id-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div id="id-modal"
+                class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
                 <div class="bg-white p-8 rounded-2xl max-w-sm w-full text-center shadow-2xl border border-slate-100">
-                    <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 font-bold">✓</div>
+                    <div
+                        class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 font-bold">
+                        ✓</div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">Account Created!</h3>
-                    <p class="text-slate-500 text-xs mb-4 leading-relaxed">Save your 12-Digit Unique ID securely. Use this ID as your username to sign in.</p>
-                    <div id="generated-id" class="bg-slate-50 p-4 rounded-xl border font-mono text-xl text-teal-700 font-black mb-6 uppercase tracking-widest"></div>
-                    <button onclick="window.location.href='dashboard.html'" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors text-sm">Proceed to Dashboard</button>
+                    <p class="text-slate-500 text-xs mb-4 leading-relaxed">Save your 12-Digit Unique ID securely. Use
+                        this ID as your username to sign in.</p>
+                    <div id="generated-id"
+                        class="bg-slate-50 p-4 rounded-xl border font-mono text-xl text-teal-700 font-black mb-6 uppercase tracking-widest">
+                    </div>
+                    <button onclick="window.location.href='dashboard.html'"
+                        class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors text-sm">Proceed
+                        to Dashboard</button>
                 </div>
             </div>
 
@@ -123,15 +180,15 @@
         window.currentMode = 'login';
 
         // Native JS Interface Tab Switch Controller
-        window.switchTab = function(mode) {
+        window.switchTab = function (mode) {
             window.currentMode = mode;
             const tLogin = document.getElementById('tab-login');
             const tReg = document.getElementById('tab-register');
 
-            if(mode === 'login') {
+            if (mode === 'login') {
                 tLogin.className = "flex-1 py-2.5 rounded-lg font-bold text-sm text-teal-800 bg-white shadow-sm transition-all";
                 tReg.className = "flex-1 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:text-slate-800 transition-all bg-transparent";
-                
+
                 document.getElementById('account-type-box').classList.add('hidden');
                 document.getElementById('worker-fields').classList.add('hidden');
                 document.getElementById('company-fields').classList.add('hidden');
@@ -143,7 +200,7 @@
             } else {
                 tReg.className = "flex-1 py-2.5 rounded-lg font-bold text-sm text-teal-800 bg-white shadow-sm transition-all";
                 tLogin.className = "flex-1 py-2.5 rounded-lg font-bold text-sm text-slate-500 hover:text-slate-800 transition-all bg-transparent";
-                
+
                 document.getElementById('account-type-box').classList.remove('hidden');
                 document.getElementById('login-fields').classList.add('hidden');
                 document.getElementById('forgot-pass-box').classList.add('hidden');
@@ -155,9 +212,9 @@
         }
 
         // Subform Separation Toggle Router
-        window.toggleRoleFields = function() {
+        window.toggleRoleFields = function () {
             const role = document.querySelector('input[name="role"]:checked').value;
-            if(role === 'worker') {
+            if (role === 'worker') {
                 document.getElementById('worker-fields').classList.remove('hidden');
                 document.getElementById('company-fields').classList.add('hidden');
             } else {
@@ -167,8 +224,8 @@
         }
 
         // Skills Matrix Contextual Selector visibility controller
-        window.toggleSkills = function() {
-            if(document.getElementById('w-type').value === 'unskilled') {
+        window.toggleSkills = function () {
+            if (document.getElementById('w-type').value === 'unskilled') {
                 document.getElementById('skill-exp-box').classList.add('hidden');
             } else {
                 document.getElementById('skill-exp-box').classList.remove('hidden');
@@ -176,7 +233,7 @@
         }
 
         // Native High Precision Browser Location Fetcher (Reverse Geocoded)
-        window.autoGetLocation = function(targetId, btnTextId) {
+        window.autoGetLocation = function (targetId, btnTextId) {
             const btnText = document.getElementById(btnTextId);
             const targetBox = document.getElementById(targetId);
 
@@ -194,11 +251,11 @@
                         btnText.innerText = "Auto Location";
                     }
                 }, () => {
-                    alert("Location request denied. Please type your coordinates or full address manually.");
+                    showToast("Location request denied. Please type your coordinates or full address manually.", "error");
                     btnText.innerText = "Auto Location";
                 });
             } else {
-                alert("Geolocation mapping hardware not supported by your current browser profile.");
+                showToast("Geolocation mapping hardware not supported by your current browser profile.", "error");
             }
         }
     </script>
@@ -207,13 +264,13 @@
         import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, doc, setDoc } from "./firebase-config.js";
 
         // Memory Efficient Canvas Base64 Compressing Pipeline
-        document.getElementById('w-photo').addEventListener('change', function(e) {
+        document.getElementById('w-photo').addEventListener('change', function (e) {
             const file = e.target.files[0];
-            if(!file) return;
+            if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(evt) {
+            reader.onload = function (evt) {
                 const img = new Image();
-                img.onload = function() {
+                img.onload = function () {
                     const canvas = document.createElement('canvas');
                     canvas.width = 400; // Constrained baseline limit matching Firestore single record criteria
                     canvas.height = img.height * (400 / img.width);
@@ -234,18 +291,18 @@
             submitBtn.innerText = "Processing...";
 
             try {
-                if(window.currentMode === 'register') {
+                if (window.currentMode === 'register') {
                     const role = document.querySelector('input[name="role"]:checked').value;
                     const generatedId = "TRIL" + Math.random().toString(36).substring(2, 10).toUpperCase();
                     const authEmail = `${generatedId}@trilochan.com`; // Dummy encapsulation structure mapping standard authentication
-                    
+
                     // Securely grab networking parameter payload properties
                     let userIp = "0.0.0.0";
                     try {
                         const ipRes = await fetch('https://api.ipify.org?format=json');
                         const ipData = await ipRes.json();
                         userIp = ipData.ip;
-                    } catch {}
+                    } catch { }
 
                     // Construct isolated internal metrics tracking block
                     const securityTracking = {
@@ -257,7 +314,7 @@
                     const userCredential = await createUserWithEmailAndPassword(auth, authEmail, password);
                     const uid = userCredential.user.uid;
 
-                    if(role === 'worker') {
+                    if (role === 'worker') {
                         await setDoc(doc(db, "workers", uid), {
                             trilochanId: generatedId,
                             name: document.getElementById('w-name').value,
@@ -288,8 +345,8 @@
                 } else {
                     // Sign In Sequence Execution Node
                     const loginId = document.getElementById('login-id').value.trim().toUpperCase();
-                    
-                    if(loginId === "ADMIN") {
+
+                    if (loginId === "ADMIN") {
                         // Redirect administrative identities immediately to root control interface validation checkpoint terminal
                         await signInWithEmailAndPassword(auth, "admin@trilochan.com", password);
                         window.location.href = "admin.html";
@@ -299,10 +356,23 @@
                     }
                 }
             } catch (err) {
-                alert("Authentication Failed: " + err.message);
+                showToast("Authentication Failed: " + err.message, "error");
                 submitBtn.innerText = window.currentMode === 'login' ? "Sign In" : "Create Account";
             }
         });
+
+        window.toggleAuthPassword = function () {
+            const input = document.getElementById('auth-password');
+            const eye = document.getElementById('eye-icon-auth');
+            if (input.type === "password") {
+                input.type = "text";
+                eye.innerText = "🙈";
+            } else {
+                input.type = "password";
+                eye.innerText = "👁️";
+            }
+        }
     </script>
 </body>
+
 </html>

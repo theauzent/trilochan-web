@@ -10,21 +10,31 @@
 
     <header class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
         <h1 class="text-xl font-black text-amber-400 tracking-wider">TRILOCHAN SYSTEM ADMIN</h1>
-        <button id="admin-logout" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded">Exit Terminal</button>
+        <button id="admin-logout" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded transition-colors">Exit Terminal</button>
     </header>
 
     <main class="container mx-auto px-4 py-10 flex-grow max-w-6xl">
         
         <div class="flex flex-wrap gap-3 mb-8">
-            <button id="toggle-w-view" onclick="changeAdminTab('workers')" class="bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm">Registered Workers</button>
-            <button id="toggle-c-view" onclick="changeAdminTab('companies')" class="bg-white text-slate-700 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm">Registered Companies</button>
-            <button id="toggle-r-view" onclick="changeAdminTab('reports')" class="bg-white text-red-600 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm">⚠️ Issue Reports</button>
-            <button id="toggle-add-worker" onclick="changeAdminTab('add-worker')" class="bg-white text-teal-600 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm">➕ Add New Worker</button>
+            <button id="toggle-w-view" onclick="changeAdminTab('workers')" class="bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm transition-colors">Registered Workers</button>
+            <button id="toggle-c-view" onclick="changeAdminTab('companies')" class="bg-white text-slate-700 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm transition-colors hover:bg-slate-50">Registered Companies</button>
+            <button id="toggle-req-view" onclick="changeAdminTab('requests')" class="bg-white text-blue-600 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm transition-colors hover:bg-slate-50">📋 Job Requests</button>
+            <button id="toggle-r-view" onclick="changeAdminTab('reports')" class="bg-white text-red-600 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm transition-colors hover:bg-slate-50">⚠️ Issue Reports</button>
+            <button id="toggle-add-worker" onclick="changeAdminTab('add-worker')" class="bg-white text-teal-600 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm transition-colors hover:bg-slate-50">➕ Add New Worker</button>
         </div>
 
         <div id="admin-loader" class="text-center py-12 text-slate-500 font-bold animate-pulse">Running Cloud Verification Diagnostics...</div>
 
-        <div id="workers-grid-box" class="space-y-4">
+        <div id="workers-grid-box" class="space-y-6">
+            <div class="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <input type="text" id="search-worker" placeholder="Search by Name, Skill, or System ID..." class="flex-1 border rounded-lg px-4 py-2.5 text-sm focus:outline-teal-500 bg-slate-50">
+                <select id="filter-type" class="w-full sm:w-48 border rounded-lg px-4 py-2.5 text-sm focus:outline-teal-500 bg-slate-50">
+                    <option value="all">All Worker Types</option>
+                    <option value="skilled">Skilled</option>
+                    <option value="semi-skilled">Semi-Skilled</option>
+                    <option value="unskilled">Unskilled</option>
+                </select>
+            </div>
             <div class="grid md:grid-cols-2 gap-6" id="workers-cards-target"></div>
         </div>
 
@@ -45,6 +55,10 @@
             </div>
         </div>
 
+        <div id="job-requests-box" class="hidden space-y-6">
+            <div class="grid lg:grid-cols-2 gap-6" id="job-requests-target"></div>
+        </div>
+
         <div id="reports-grid-box" class="hidden grid sm:grid-cols-2 gap-6"></div>
 
         <div id="add-worker-box" class="hidden bg-white p-8 rounded-2xl shadow-xl border border-slate-100 max-w-2xl mx-auto">
@@ -53,17 +67,31 @@
                 <input type="text" id="worker-name" placeholder="Worker Name" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
                 <input type="tel" id="worker-phone" placeholder="Phone Number" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
                 <input type="number" id="worker-age" placeholder="Age" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
-                <input type="text" id="worker-skill" placeholder="Skill (e.g., Electrician, Plumber)" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
-                <textarea id="worker-address" rows="3" placeholder="Address" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50"></textarea>
+                <input type="text" id="worker-skill" placeholder="Skill (e.g., Electrician, Plumber, Helper)" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
+                
+                <select id="worker-type" class="w-full border rounded-xl px-4 py-3 text-sm bg-slate-50 focus:outline-teal-500 font-medium text-slate-700">
+                    <option value="unskilled">Unskilled (Helper, General Duties)</option>
+                    <option value="semi-skilled">Semi-Skilled</option>
+                    <option value="skilled">Skilled</option>
+                </select>
+
+                <div class="relative">
+                    <input type="password" id="worker-password" placeholder="Create Password for Worker (Min 6 chars)" required class="w-full border rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-teal-500 bg-slate-50">
+                    <button type="button" onclick="togglePasswordVisibility('worker-password', 'eye-icon-admin')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm font-bold">
+                        <span id="eye-icon-admin">👁️</span>
+                    </button>
+                </div>
+
+                <textarea id="worker-address" rows="3" placeholder="Full Address" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50"></textarea>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="worker-photo" class="block text-xs font-bold text-slate-500 uppercase mb-1">Worker Photo</label>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Worker Photo</label>
                         <input type="file" id="worker-photo" accept="image/*" class="w-full border rounded-xl px-4 py-2.5 text-sm bg-slate-50 focus:outline-teal-500">
                         <img id="worker-photo-preview" src="#" alt="Photo Preview" class="mt-2 hidden w-24 h-24 object-cover rounded-lg">
                     </div>
                     <div>
-                        <label for="worker-aadhaar" class="block text-xs font-bold text-slate-500 uppercase mb-1">Aadhaar Card (Front)</label>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Aadhaar Card (Front)</label>
                         <input type="file" id="worker-aadhaar" accept="image/*,application/pdf" class="w-full border rounded-xl px-4 py-2.5 text-sm bg-slate-50 focus:outline-teal-500">
                         <img id="worker-aadhaar-preview" src="#" alt="Aadhaar Preview" class="mt-2 hidden w-24 h-24 object-cover rounded-lg">
                     </div>
@@ -77,11 +105,58 @@
 
     </main>
 
+    <div id="worker-success-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white p-6 rounded-2xl max-w-md w-full shadow-2xl border border-slate-100 space-y-4">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xl mx-auto font-bold">✓</div>
+            <h3 class="text-xl font-black text-slate-900 text-center">Worker Registered Successfully!</h3>
+            <p class="text-xs text-slate-500 text-center">Provide these security credentials to the worker so they can login to their dashboard.</p>
+            
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2.5 text-sm">
+                <div>
+                    <span class="block text-[10px] font-bold text-slate-400 uppercase">SYSTEM USER ID</span>
+                    <span id="pop-worker-id" class="block font-mono text-base font-black text-teal-700 uppercase tracking-wider"></span>
+                </div>
+                <div>
+                    <span class="block text-[10px] font-bold text-slate-400 uppercase">LOGIN PASSWORD</span>
+                    <span id="pop-worker-pass" class="block font-mono text-base font-black text-slate-800"></span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 pt-2 border-t text-xs text-slate-600">
+                    <p><strong>Name:</strong> <span id="pop-worker-name"></span></p>
+                    <p><strong>Phone:</strong> <span id="pop-worker-phone"></span></p>
+                    <p><strong>Skill:</strong> <span id="pop-worker-skill"></span></p>
+                    <p><strong>Type:</strong> <span id="pop-worker-type" class="uppercase"></span></p>
+                </div>
+            </div>
+            
+            <button onclick="closeSuccessModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl shadow-md transition-colors text-sm uppercase tracking-wide">
+                Done & Close
+            </button>
+        </div>
+    </div>
+
     <div id="footer-container"></div>
     <script src="components.js"></script>
 
     <script>
-        // Function to handle file preview
+        let allWorkersData = [];
+
+        window.togglePasswordVisibility = function(inputId, eyeId) {
+            const input = document.getElementById(inputId);
+            const eye = document.getElementById(eyeId);
+            if (input.type === "password") {
+                input.type = "text";
+                eye.innerText = "🙈";
+            } else {
+                input.type = "password";
+                eye.innerText = "👁️";
+            }
+        }
+
+        window.closeSuccessModal = function() {
+            document.getElementById('worker-success-modal').classList.add('hidden');
+            window.changeAdminTab('workers'); 
+        }
+
         function setupFilePreview(inputId, previewId) {
             const input = document.getElementById(inputId);
             const preview = document.getElementById(previewId);
@@ -102,101 +177,172 @@
         window.changeAdminTab = function(targetTab) {
             const btnW = document.getElementById('toggle-w-view');
             const btnC = document.getElementById('toggle-c-view');
+            const btnReq = document.getElementById('toggle-req-view');
             const btnR = document.getElementById('toggle-r-view');
             const btnAW = document.getElementById('toggle-add-worker');
+            
             const boxW = document.getElementById('workers-grid-box');
             const boxC = document.getElementById('companies-table-box');
+            const boxReq = document.getElementById('job-requests-box');
             const boxR = document.getElementById('reports-grid-box');
             const boxAW = document.getElementById('add-worker-box');
 
-            // Reset tab highlights
-            btnW.className = btnC.className = btnR.className = btnAW.className = "bg-white text-slate-700 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm";
-            boxW.classList.add('hidden'); boxC.classList.add('hidden'); boxR.classList.add('hidden'); boxAW.classList.add('hidden');
+            const inactiveClass = "bg-white text-slate-700 font-bold px-5 py-3 rounded-xl shadow-md border border-slate-200 text-sm transition-colors hover:bg-slate-50";
+            btnW.className = btnC.className = btnReq.className = btnR.className = btnAW.className = inactiveClass;
+            btnReq.classList.add('text-blue-600');
+            btnR.classList.add('text-red-600');
+            btnAW.classList.add('text-teal-600');
+            
+            boxW.classList.add('hidden'); 
+            boxC.classList.add('hidden'); 
+            boxReq.classList.add('hidden');
+            boxR.classList.add('hidden'); 
+            boxAW.classList.add('hidden');
+
+            const activeClass = "bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm transition-colors";
 
             if(targetTab === 'workers') {
-                btnW.className = "bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm";
+                btnW.className = activeClass;
                 boxW.classList.remove('hidden');
             } else if(targetTab === 'companies') {
-                btnC.className = "bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm";
+                btnC.className = activeClass;
                 boxC.classList.remove('hidden');
+            } else if(targetTab === 'requests') {
+                btnReq.className = "bg-blue-600 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-blue-700 text-sm transition-colors";
+                boxReq.classList.remove('hidden');
             } else if(targetTab === 'reports') {
-                btnR.className = "bg-red-600 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-red-700 text-sm";
+                btnR.className = "bg-red-600 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-red-700 text-sm transition-colors";
                 boxR.classList.remove('hidden');
             } else if(targetTab === 'add-worker') {
-                btnAW.className = "bg-slate-800 text-white font-bold px-5 py-3 rounded-xl shadow-md border border-slate-700 text-sm";
+                btnAW.className = activeClass;
                 boxAW.classList.remove('hidden');
             }
         }
+
+        function renderWorkers(workersArray) {
+            const workersTarget = document.getElementById('workers-cards-target');
+            workersTarget.innerHTML = "";
+            
+            if (workersArray.length === 0) {
+                workersTarget.innerHTML = `<div class="col-span-1 md:col-span-2 text-center py-10 text-slate-400 font-bold">No workers found matching your search.</div>`;
+                return;
+            }
+
+            workersArray.forEach(w => {
+                const badgeColor = w.type === 'skilled' ? 'bg-emerald-100 text-emerald-700' : (w.type === 'semi-skilled' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600');
+                // Status switch UI (ON/OFF visual)
+                const isAvailable = w.status !== 'busy';
+                const statusText = isAvailable ? '🟢 Available' : '🔴 Busy / Assigned';
+
+                workersTarget.innerHTML += `
+                    <div class="bg-white rounded-xl shadow hover:shadow-md transition-shadow border border-slate-200 p-5 flex gap-4 items-start">
+                        <img src="${w.photoBase64 || 'https://via.placeholder.com/150?text=No+Photo'}" class="w-20 h-20 rounded-lg object-cover border bg-slate-100 shrink-0">
+                        <div class="space-y-1 min-w-0 w-full">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-bold text-slate-900 truncate">${w.name}</h4>
+                                <span class="text-[10px] bg-slate-50 font-mono text-teal-700 px-2 py-0.5 rounded border border-slate-200 font-bold">${w.trilochanId}</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-0.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded ${badgeColor}">${w.type || 'Unskilled'}</span>
+                                    <span class="text-xs text-slate-400 font-bold">Age: ${w.age}</span>
+                                </div>
+                                <select onchange="updateWorkerStatus('${w.docId}', this.value)" class="text-xs font-bold border rounded-md px-1.5 py-0.5 bg-slate-50 focus:outline-none cursor-pointer">
+                                    <option value="active" ${isAvailable ? 'selected' : ''}>🟢 Available</option>
+                                    <option value="busy" ${!isAvailable ? 'selected' : ''}>🔴 Busy</option>
+                                </select>
+                            </div>
+                            <p class="text-xs text-slate-600 truncate pt-1"><strong>Loc:</strong> ${w.address || 'N/A'}</p>
+                            <div class="text-xs text-slate-700 grid grid-cols-2 gap-1 pt-2 border-t border-slate-100 mt-2">
+                                <p><strong>Ph:</strong> ${w.phone}</p>
+                                <p class="truncate"><strong>Skill:</strong> ${w.skill}</p>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function handleFilter() {
+            const searchTerm = document.getElementById('search-worker').value.toLowerCase();
+            const filterType = document.getElementById('filter-type').value;
+
+            const filtered = allWorkersData.filter(w => {
+                const matchesSearch = 
+                    (w.name && w.name.toLowerCase().includes(searchTerm)) || 
+                    (w.skill && w.skill.toLowerCase().includes(searchTerm)) || 
+                    (w.trilochanId && w.trilochanId.toLowerCase().includes(searchTerm));
+                
+                const matchesType = filterType === 'all' || w.type === filterType;
+                
+                return matchesSearch && matchesType;
+            });
+
+            renderWorkers(filtered);
+        }
+
+        document.getElementById('search-worker').addEventListener('input', handleFilter);
+        document.getElementById('filter-type').addEventListener('change', handleFilter);
     </script>
 
     <script type="module">
-        import { auth, db, onAuthStateChanged, signOut, doc, getDoc, collection, getDocs } from "./firebase-config.js";
+        import { auth, db, SecondaryAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, doc, setDoc, updateDoc, getDoc, collection, getDocs } from "./firebase-config.js";
 
-        // VERIFICATION ROUTE GUARD SYSTEM
+        // Route Guard
         onAuthStateChanged(auth, async (user) => {
             if(!user) {
                 window.location.href = "auth.html";
                 return;
             }
-
             try {
-                // 1. Verify if present in master admins collection
                 const adminCheck = await getDoc(doc(db, "admins", user.uid));
                 if(adminCheck.exists()) {
-                    // Valid Admin. Proceed to fetch database records
-                    loadSystemData();
+                    window.loadSystemData(); 
                 } else {
-                    // 2. Not an Admin. Check if user belongs to workers or companies to bounce them back to dashboard
-                    const workerCheck = await getDoc(doc(db, "workers", user.uid));
-                    const companyCheck = await getDoc(doc(db, "companys", user.uid));
-
-                    if(workerCheck.exists() || companyCheck.exists()) {
-                        alert("Access Denied: Redirecting to your personal account dashboard.");
-                        window.location.href = "dashboard.html";
-                    } else {
-                        // Dead Account reference clean fallback
-                        alert("Unauthorized Session context.");
-                        await signOut(auth);
-                        window.location.href = "auth.html";
-                    }
+                    window.location.href = "dashboard.html";
                 }
             } catch (err) {
-                alert("Security handshake failure: " + err.message);
                 window.location.href = "auth.html";
             }
         });
 
-        document.getElementById('admin-logout').addEventListener('click', () => {
-            signOut(auth).then(() => window.location.href = "auth.html");
-        });
-
-        async function loadSystemData() {
+        // NAYA EXPORTED FUNCTION: Live Update Worker Availability
+        window.updateWorkerStatus = async function(docId, newStatus) {
             try {
-                // Fetch Workers Group Array
-                const wSnap = await getDocs(collection(db, "workers"));
-                const workersTarget = document.getElementById('workers-cards-target');
-                workersTarget.innerHTML = "";
-                wSnap.forEach(doc => {
-                    const w = doc.data();
-                    workersTarget.innerHTML += `
-                        <div class="bg-white rounded-xl shadow border border-slate-200 p-5 flex gap-4 items-start">
-                            <img src="${w.photoBase64 || 'https://via.placeholder.com/150?text=No+Photo'}" class="w-20 h-20 rounded-lg object-cover border bg-slate-100 shrink-0">
-                            <div class="space-y-1 min-w-0 w-full">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="font-bold text-slate-900 truncate">${w.name}</h4>
-                                    <span class="text-[10px] bg-slate-100 font-mono text-teal-700 px-2 py-0.5 rounded border border-slate-200 font-bold">${w.trilochanId}</span>
-                                </div>
-                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">${w.type} • Age: ${w.age}</p>
-                                <p class="text-xs text-slate-600 truncate"><strong>Location:</strong> ${w.address || 'N/A'}</p>
-                                <div class="text-xs text-slate-700 grid grid-cols-2 gap-1 pt-1 border-t border-slate-100 mt-2">
-                                    <p><strong>Phone:</strong> ${w.phone}</p>
-                                    <p class="truncate"><strong>Skill:</strong> ${w.skill}</p>
-                                </div>
-                            </div>
-                        </div>`;
+                await updateDoc(doc(db, "workers", docId), {
+                    status: newStatus
                 });
+                if(window.showToast) showToast("Availability updated in cloud!", "success");
+            } catch (err) {
+                if(window.showToast) showToast("Failed to update status: " + err.message, "error");
+            }
+        }
 
-                // Fetch Companies Group Array
+        // NAYA EXPORTED FUNCTION: Live Update Job Request Status
+        window.updateJobStatus = async function(reqId, newStatus) {
+            try {
+                await updateDoc(doc(db, "job_requests", reqId), {
+                    status: newStatus
+                });
+                if(window.showToast) showToast(`Job marked as ${newStatus}!`, "success");
+                window.loadSystemData(); // Reload UI to update border colors
+            } catch (err) {
+                if(window.showToast) showToast("Failed to update job: " + err.message, "error");
+            }
+        }
+
+        window.loadSystemData = async function() {
+            try {
+                // Fetch Workers Data
+                const wSnap = await getDocs(collection(db, "workers"));
+                allWorkersData = []; 
+                wSnap.forEach(snap => {
+                    const data = snap.data();
+                    data.docId = snap.id; // Map internal document UID for easy updating later
+                    allWorkersData.push(data);
+                });
+                renderWorkers(allWorkersData);
+
+                // Fetch Companies Data
                 const cSnap = await getDocs(collection(db, "companys"));
                 const companiesTarget = document.getElementById('companies-table-target');
                 companiesTarget.innerHTML = "";
@@ -215,7 +361,62 @@
                         </tr>`;
                 });
 
-                // FETCH USER REPORTS ARRAY
+                // Fetch Job Requests Data with Action Handlers
+                const reqSnap = await getDocs(collection(db, "job_requests"));
+                const reqTarget = document.getElementById('job-requests-target');
+                reqTarget.innerHTML = "";
+                if(reqSnap.empty) {
+                    reqTarget.innerHTML = `<div class="col-span-1 lg:col-span-2 text-center py-10 text-slate-400 font-bold">No active job requests right now.</div>`;
+                } else {
+                    reqSnap.forEach(snap => {
+                        const r = snap.data();
+                        const formattedDate = r.timestamp ? new Date(r.timestamp).toLocaleString() : "N/A";
+                        
+                        // Dynamic Border tracking status
+                        const borderLine = r.status === 'Approved' ? 'border-emerald-500' : (r.status === 'Rejected' ? 'border-red-400' : (r.status === 'Completed' ? 'border-purple-500' : 'border-blue-500'));
+
+                        reqTarget.innerHTML += `
+                            <div class="bg-white p-6 rounded-2xl shadow-md border-t-4 ${borderLine} relative">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div>
+                                        <h4 class="text-xl font-black text-slate-900">${r.companyName}</h4>
+                                        <p class="text-xs text-slate-400 font-medium">Req ID: <span class="font-mono">${r.requestId}</span></p>
+                                    </div>
+                                    
+                                    <select onchange="updateJobStatus('${r.requestId}', this.value)" class="text-xs font-bold border rounded-lg px-2.5 py-1.5 bg-slate-50 focus:outline-none cursor-pointer">
+                                        <option value="Pending" ${r.status === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
+                                        <option value="Approved" ${r.status === 'Approved' ? 'selected' : ''}>✅ Approve / Active</option>
+                                        <option value="Completed" ${r.status === 'Completed' ? 'selected' : ''}>🔮 Completed</option>
+                                        <option value="Rejected" ${r.status === 'Rejected' ? 'selected' : ''}>❌ Reject</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 grid grid-cols-2 gap-y-3 gap-x-4 text-sm mb-4">
+                                    <div>
+                                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Skill Required</span>
+                                        <span class="font-bold text-slate-800">${r.skill}</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Total Workers</span>
+                                        <span class="font-bold text-slate-800">${r.count} Person(s)</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Duration</span>
+                                        <span class="font-bold text-slate-800">${r.duration}</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[10px] font-bold text-slate-400 uppercase">Location</span>
+                                        <span class="font-bold text-slate-800 truncate">${r.location}</span>
+                                    </div>
+                                </div>
+
+                                ${r.notes ? `<p class="text-xs text-slate-600 bg-amber-50 p-3 rounded-lg border border-amber-100 mb-4"><strong>Notes:</strong> ${r.notes}</p>` : ''}
+                                <p class="text-[10px] text-slate-400 font-medium text-right border-t pt-2">Requested on: ${formattedDate}</p>
+                            </div>`;
+                    });
+                }
+
+                // Fetch Issue Reports Data
                 const rSnap = await getDocs(collection(db, "reports"));
                 const reportsTarget = document.getElementById('reports-grid-box');
                 reportsTarget.innerHTML = "";
@@ -232,7 +433,6 @@
                 });
 
                 document.getElementById('admin-loader').classList.add('hidden');
-
             } catch (err) {
                 document.getElementById('admin-loader').innerText = "Data fetch failure: " + err.message;
             } finally {
@@ -240,6 +440,68 @@
                 setupFilePreview('worker-aadhaar', 'worker-aadhaar-preview');
             }
         }
+
+        // Add Worker Trigger Pipeline
+        document.getElementById('add-worker-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('add-worker-submit-btn');
+            btn.innerText = "Creating Cloud Identity...";
+            btn.disabled = true;
+
+            try {
+                const generatedId = "TRW" + Math.random().toString(36).substring(2, 10).toUpperCase();
+                const fakeEmail = `${generatedId}@trilochan.com`;
+
+                const userCredential = await createUserWithEmailAndPassword(SecondaryAuth, fakeEmail, password);
+                const uid = userCredential.user.uid;
+
+                const workerPhotoInput = document.getElementById('worker-photo');
+                const workerAadhaarInput = document.getElementById('worker-aadhaar');
+
+                let photoBase64 = '';
+                if (workerPhotoInput.files.length > 0) photoBase64 = await convertFileToBase64(workerPhotoInput.files[0]);
+
+                let aadhaarBase64 = '';
+                if (workerAadhaarInput.files.length > 0) aadhaarBase64 = await convertFileToBase64(workerAadhaarInput.files[0]);
+
+                await setDoc(doc(db, "workers", uid), {
+                    trilochanId: generatedId,
+                    name: document.getElementById('worker-name').value,
+                    phone: document.getElementById('worker-phone').value,
+                    age: parseInt(document.getElementById('worker-age').value),
+                    skill: document.getElementById('worker-skill').value,
+                    type: document.getElementById('worker-type').value, 
+                    address: document.getElementById('worker-address').value,
+                    photoBase64: photoBase64,
+                    aadhaarBase64: aadhaarBase64,
+                    status: 'active', // 'active' means available, 'busy' means assigned
+                    createdAt: new Date().toISOString()
+                });
+
+                document.getElementById('pop-worker-id').innerText = generatedId;
+                document.getElementById('pop-worker-pass').innerText = document.getElementById('worker-password').value;
+                document.getElementById('pop-worker-name').innerText = document.getElementById('worker-name').value;;
+                document.getElementById('pop-worker-phone').innerText = document.getElementById('worker-phone').value;;
+                document.getElementById('pop-worker-skill').innerText = document.getElementById('worker-skill').value;;
+                document.getElementById('pop-worker-type').innerText = document.getElementById('worker-type').value;;
+
+                document.getElementById('worker-success-modal').classList.remove('hidden');
+                if(window.showToast) showToast("Worker registered inside cloud server!", "success");
+                
+                document.getElementById('add-worker-form').reset();
+                document.getElementById('worker-photo-preview').classList.add('hidden');
+                document.getElementById('worker-aadhaar-preview').classList.add('hidden');
+                
+                signOut(SecondaryAuth); 
+                window.loadSystemData(); 
+
+            } catch (err) {
+                if(window.showToast) showToast("Identity Failure: " + err.message, "error");
+            } finally {
+                btn.innerText = "Add Worker";
+                btn.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>

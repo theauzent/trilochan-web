@@ -12,58 +12,120 @@
         <h1 class="text-xl font-black text-teal-400">TRILOCHAN PANEL</h1>
         <div class="flex items-center gap-4">
             <span id="header-id" class="text-xs bg-slate-800 px-3 py-1.5 rounded-md font-mono text-teal-300">Loading...</span>
-            <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded">Logout</button>
+            <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded transition-colors">Logout</button>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-12 flex-grow max-w-2xl">
+    <main class="container mx-auto px-4 py-12 flex-grow max-w-2xl space-y-8">
         
         <div id="loader" class="text-center py-20 text-teal-600 font-bold animate-pulse">
             Fetching Your Profile Details...
         </div>
 
         <div id="profile-card" class="hidden bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden p-8">
-            <div class="flex items-center gap-6 border-b pb-6 mb-6">
-                <img id="d-photo" src="./images/logo.png" class="w-24 h-24 object-cover rounded-full border-4 border-slate-100 shadow-sm" alt="Profile">
+            <div class="flex items-center gap-6 border-b border-slate-100 pb-6 mb-6">
+                <img id="d-photo" src="./images/logo.png" class="w-24 h-24 object-cover rounded-full border-4 border-slate-50 shadow-sm" alt="Profile">
                 <div>
                     <h2 id="d-name" class="text-2xl font-black text-slate-900">Name</h2>
-                    <p id="d-role-badge" class="text-sm font-bold text-teal-600 uppercase tracking-widest mt-1">Role</p>
+                    <div class="flex items-center gap-3 mt-1.5">
+                        <span id="d-role-badge" class="bg-teal-100 text-teal-700 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-widest">Role</span>
+                        <span id="d-status-badge" class="hidden bg-emerald-100 text-emerald-700 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-widest flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Active / Available</span>
+                    </div>
                 </div>
             </div>
 
-            <div id="d-details" class="grid sm:grid-cols-2 gap-y-4 gap-x-8">
-                </div>
+            <div id="d-details" class="grid sm:grid-cols-2 gap-y-4 gap-x-8"></div>
+        </div>
+
+        <div id="company-history-section" class="hidden space-y-4">
+            <div class="flex justify-between items-center px-2">
+                <h3 class="text-lg font-black text-slate-900 uppercase tracking-wide">Your Job Requests</h3>
+                <button onclick="openRequestModal()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-lg shadow transition-colors">➕ Request Manpower</button>
+            </div>
+            <div id="company-requests-target" class="space-y-4"></div>
         </div>
 
     </main>
 
+    <div id="request-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white p-8 rounded-2xl max-w-lg w-full shadow-2xl border border-slate-100">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-2xl font-black text-slate-900">Request Manpower</h3>
+                    <p class="text-xs text-slate-500 font-medium mt-1">Submit your requirements directly to the admin.</p>
+                </div>
+                <button onclick="closeRequestModal()" class="text-slate-400 hover:text-slate-600 text-3xl font-bold">&times;</button>
+            </div>
+            
+            <form id="worker-request-form" class="space-y-4">
+                <input type="text" id="req-skill" placeholder="Required Skill (e.g., Electrician, Helper)" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 pl-1">No. of Workers</label>
+                        <input type="number" id="req-count" min="1" placeholder="E.g., 5" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 pl-1">Duration</label>
+                        <input type="text" id="req-duration" placeholder="E.g., 15 Days / Permanent" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 pl-1">Work Location</label>
+                    <textarea id="req-location" rows="2" placeholder="Full site address" required class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 pl-1">Extra Notes (Optional)</label>
+                    <textarea id="req-notes" rows="2" placeholder="Any special requirements?" class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-teal-500 bg-slate-50"></textarea>
+                </div>
+
+                <button type="submit" id="req-submit-btn" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-xl shadow-md transition-colors uppercase tracking-wide text-sm mt-2">
+                    Submit Request to Admin
+                </button>
+            </form>
+        </div>
+    </div>
+
     <div id="footer-container"></div>
     <script src="components.js"></script>
 
-    <script type="module">
-        import { auth, db, onAuthStateChanged, signOut, doc, getDoc } from "./firebase-config.js";
+    <script>
+        window.currentCompanyId = "";
+        window.currentCompanyName = "";
 
-        // Protect Page
+        window.openRequestModal = function() {
+            document.getElementById('request-modal').classList.remove('hidden');
+        }
+
+        window.closeRequestModal = function() {
+            document.getElementById('request-modal').classList.add('hidden');
+            document.getElementById('worker-request-form').reset();
+        }
+    </script>
+
+    <script type="module">
+        // Added query, where, collection, getDocs to track request history
+        import { auth, db, onAuthStateChanged, signOut, doc, getDoc, setDoc, collection, query, where, getDocs } from "./firebase-config.js";
+
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
-                window.location.href = "auth.html"; // Redirect if not logged in
+                window.location.href = "auth.html";
             } else {
                 fetchUserData(user.uid);
             }
         });
 
-        // Logout
         document.getElementById('logout-btn').addEventListener('click', () => {
             signOut(auth).then(() => window.location.href = "auth.html");
         });
 
         async function fetchUserData(uid) {
             try {
-                // First check in workers collection
                 let docSnap = await getDoc(doc(db, "workers", uid));
                 let isWorker = true;
 
-                // If not found in workers, check in companys collection
                 if (!docSnap.exists()) {
                     docSnap = await getDoc(doc(db, "companys", uid));
                     isWorker = false;
@@ -74,23 +136,36 @@
                     
                     document.getElementById('header-id').innerText = `ID: ${data.trilochanId}`;
                     document.getElementById('d-name').innerText = data.name;
-                    document.getElementById('d-role-badge').innerText = isWorker ? `Worker - ${data.type}` : "Company Profile";
+                    document.getElementById('d-role-badge').innerText = isWorker ? `Worker - ${data.type || 'General'}` : "Company Profile";
                     
                     if(isWorker && data.photoBase64) {
                         document.getElementById('d-photo').src = data.photoBase64;
+                        // Map worker live availability status badge
+                        const statusBadge = document.getElementById('d-status-badge');
+                        statusBadge.classList.remove('hidden');
+                        if (data.status === 'busy') {
+                            statusBadge.className = "bg-purple-100 text-purple-700 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-widest flex items-center gap-1";
+                            statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-purple-500"></span> Assigned / On-Duty`;
+                        }
                     } else if (!isWorker) {
-                        document.getElementById('d-photo').classList.add('hidden'); // Hide img for company
+                        document.getElementById('d-photo').classList.add('hidden'); 
+                        document.getElementById('company-history-section').classList.remove('hidden'); // Show History target
+                        
+                        window.currentCompanyId = data.trilochanId;
+                        window.currentCompanyName = data.name;
+                        
+                        // Load this company's historical request data
+                        fetchCompanyRequests(data.trilochanId);
                     }
 
                     const detailsContainer = document.getElementById('d-details');
-                    detailsContainer.innerHTML = ""; // Clear existing
+                    detailsContainer.innerHTML = "";
 
-                    // Render Fields dynamically
                     const appendField = (label, value) => {
                         detailsContainer.innerHTML += `
-                            <div>
-                                <span class="block text-xs font-bold text-slate-400 uppercase">${label}</span>
-                                <span class="block text-sm font-semibold text-slate-800">${value}</span>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">${label}</span>
+                                <span class="block text-sm font-bold text-slate-800">${value}</span>
                             </div>`;
                     };
 
@@ -103,24 +178,103 @@
                             appendField("Primary Skill", data.skill);
                             appendField("Experience", data.experience + " Years");
                         }
+                        appendField("Address", data.address);
                     } else {
                         appendField("Email Address", data.email);
                         appendField("Job Request Type", data.jobType);
+                        appendField("Corporate Address", data.address);
                     }
 
                     document.getElementById('loader').classList.add('hidden');
                     document.getElementById('profile-card').classList.remove('hidden');
+                    if(window.showToast) showToast("Profile loaded successfully!", "success");
 
                 } else {
-                    alert("Profile data not found. Please create a new account.");
-                    await signOut(auth);
-                    window.location.href = "auth.html";
+                    if(window.showToast) showToast("Profile data missing! Redirecting...", "error");
+                    setTimeout(async () => {
+                        await signOut(auth);
+                        window.location.href = "auth.html";
+                    }, 2500);
                 }
             } catch (error) {
-                console.error("Error fetching document:", error);
-                document.getElementById('loader').innerText = "Error loading profile.";
+                document.getElementById('loader').innerText = "Data Security Blocked!";
             }
         }
+
+        // NAYA FUNCTION: Fetch Company Specific Request History logs
+        async function fetchCompanyRequests(companyId) {
+            try {
+                const target = document.getElementById('company-requests-target');
+                target.innerHTML = "";
+
+                // Query database dynamically for requests matching solely this company's unique system id
+                const q = query(collection(db, "job_requests"), where("companyId", "==", companyId));
+                const snap = await getDocs(q);
+
+                if(snap.empty) {
+                    target.innerHTML = `<div class="text-center py-6 text-slate-400 bg-white border border-slate-200 rounded-xl font-bold text-xs">You haven't requested any manpower yet.</div>`;
+                    return;
+                }
+
+                snap.forEach(doc => {
+                    const r = doc.data();
+                    
+                    // Style badges dynamic color router
+                    const badgeClass = r.status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : (r.status === 'Rejected' ? 'bg-red-100 text-red-700' : (r.status === 'Completed' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'));
+                    const statusText = r.status === 'Pending' ? '⏳ Pending Admin Check' : (r.status === 'Approved' ? '✅ Active / Approved' : (r.status === 'Completed' ? '🔮 Fulfilled' : '❌ Request Rejected'));
+
+                    target.innerHTML += `
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-base">${r.skill} <span class="text-slate-400 text-xs font-normal">x ${r.count} Workers</span></h4>
+                                <p class="text-xs text-slate-400 font-medium mt-0.5">Loc: ${r.location} • Duration: ${r.duration}</p>
+                            </div>
+                            <span class="${badgeClass} px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-center shrink-0 self-start sm:self-center shadow-sm">
+                                ${statusText}
+                            </span>
+                        </div>`;
+                });
+            } catch(err) {
+                console.error("History pipeline issue: ", err);
+            }
+        }
+
+        // Job Request Form Submission Interceptor
+        document.getElementById('worker-request-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('req-submit-btn');
+            btn.innerText = "Sending Request...";
+            btn.disabled = true;
+
+            try {
+                const reqId = "REQ" + Math.random().toString(36).substring(2, 10).toUpperCase();
+                
+                await setDoc(doc(db, "job_requests", reqId), {
+                    requestId: reqId,
+                    companyId: window.currentCompanyId,
+                    companyName: window.currentCompanyName,
+                    skill: document.getElementById('req-skill').value,
+                    count: parseInt(document.getElementById('req-count').value),
+                    duration: document.getElementById('req-duration').value,
+                    location: document.getElementById('req-location').value,
+                    notes: document.getElementById('req-notes').value,
+                    status: 'Pending',
+                    timestamp: new Date().toISOString()
+                });
+
+                if(window.showToast) showToast("Manpower request submitted successfully!", "success");
+                window.closeRequestModal();
+                
+                // Refresh list right away
+                fetchCompanyRequests(window.currentCompanyId);
+
+            } catch (error) {
+                if(window.showToast) showToast("Failed to submit request: " + error.message, "error");
+            } finally {
+                btn.innerText = "Submit Request to Admin";
+                btn.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>

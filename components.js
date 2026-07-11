@@ -1,8 +1,9 @@
 // components.js
 
 const headerCode = `
-    <div class="bg-amber-500 text-white text-center text-sm py-1.5 font-medium">
+    <div class="bg-amber-500 text-white text-center text-sm py-1.5 font-medium flex flex-wrap justify-center items-center gap-x-2">
         Website under development. For urgent queries, please email us at <a href="mailto:companytrilochan@gmail.com" class="underline hover:opacity-90 font-bold transition-opacity">companytrilochan@gmail.com</a>.
+        <span class="hidden sm:inline">|</span> For technical support, please use our <a href="#" onclick="toggleReportModal(true)" class="underline hover:opacity-90 font-bold transition-opacity">Report Problem</a> feature.
     </div>
     <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-slate-100">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -13,14 +14,17 @@ const headerCode = `
                     <p class="text-[10px] text-teal-700 font-bold uppercase tracking-widest">Manpower Supply</p>
                 </div>
             </div>
-            <nav class="hidden md:flex gap-8 font-semibold text-slate-600">
-                <a href="index.html" class="hover:text-teal-600 transition-colors">Home</a>
-                <a href="index.html#services-section" class="hover:text-teal-600 transition-colors">Work Models</a>
-                <a href="dashboard.html" class="hover:text-teal-600 transition-colors">My Account</a>
-            </nav> 
-            <a href="auth.html" class="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-6 py-2.5 rounded-full font-bold shadow-md hover:shadow-lg transition-all"> 
-                Join Us
-            </a>
+            <div class="flex items-center gap-6">
+                <nav class="hidden md:flex items-center gap-8 font-semibold text-slate-600">
+                    <a href="index.html" class="hover:text-teal-600 transition-colors">Home</a>
+                    <a href="index.html#services-section" class="hover:text-teal-600 transition-colors">Work Models</a>
+                    <a href="dashboard.html" class="hover:text-teal-600 transition-colors">My Account</a>
+                    <div id="google_element" class="min-w-[100px]"></div>
+                </nav> 
+                <a href="auth.html" class="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-6 py-2.5 rounded-full font-bold shadow-md hover:shadow-lg transition-all"> 
+                    Join Us
+                </a>
+            </div>
         </div>
     </header>
 `;
@@ -76,6 +80,8 @@ const footerCode = `
             </form>
         </div>
     </div>
+    
+    <div id="toast-container" class="fixed top-20 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
 `;
 
 // Global toggle modal function
@@ -87,6 +93,40 @@ window.toggleReportModal = function(show) {
     }
 }
 
+// Custom Toast Notification System
+window.showToast = function(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if(!container) return;
+
+    const toast = document.createElement('div');
+    
+    // Set colors based on type (success vs error)
+    const bgColor = type === 'success' ? 'bg-emerald-500' : 'bg-red-500';
+    const icon = type === 'success' ? '✓' : '✕';
+
+    toast.className = `${bgColor} text-white px-5 py-3 rounded-xl shadow-xl font-medium text-sm flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0 pointer-events-auto`;
+    
+    toast.innerHTML = `
+        <span class="font-black text-lg">${icon}</span>
+        <span>${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    // Animate In
+    setTimeout(() => {
+        toast.classList.remove('translate-x-full', 'opacity-0');
+        toast.classList.add('translate-x-0', 'opacity-100');
+    }, 10);
+
+    // Animate Out & Remove after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('translate-x-0', 'opacity-100');
+        toast.classList.add('translate-x-full', 'opacity-0');
+        setTimeout(() => toast.remove(), 300); // Wait for transition to finish
+    }, 3000);
+}
+
 // Inject components on load
 document.addEventListener("DOMContentLoaded", () => {
     const headerContainer = document.getElementById("header-container");
@@ -94,6 +134,30 @@ document.addEventListener("DOMContentLoaded", () => {
     
     if(headerContainer) headerContainer.innerHTML = headerCode;
     if(footerContainer) footerContainer.innerHTML = footerCode;
+
+    // --- Google Translate Integration ---
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .goog-te-banner-frame { display: none !important; }
+        body { top: 0px !important; position: relative !important; }
+        #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+        .goog-text-highlight { background: none !important; box-shadow: none !important; }
+        .goog-te-menu-frame { z-index: 100000 !important; }
+        .goog-te-gadget-simple { border: 1px solid #cbd5e1 !important; background-color: #f8fafc !important; padding: 6px 12px !important; border-radius: 8px !important; font-size: 14px !important; cursor: pointer !important; }
+        .goog-te-gadget-simple .goog-te-menu-value span { color: #334155 !important; font-weight: 700 !important; }
+        .goog-te-gadget-simple .goog-te-menu-value span:hover { color: #0d9488 !important; }
+        .goog-te-gadget-icon { display: none !important; }
+    `;
+    document.head.appendChild(style);
+
+    window.loadGoogleTranslate = function() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,hi',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false
+        }, 'google_element');
+    }
 
     // Report Form Database Submission Handler
     const reportForm = document.getElementById('global-report-form');
@@ -105,7 +169,6 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.disabled = true;
 
             try {
-                // Fetch firebase-config context dynamic modules dynamically
                 const { db, doc, setDoc } = await import('./firebase-config.js');
                 const reportId = "REP" + Math.random().toString(36).substring(2, 10).toUpperCase();
                 
@@ -116,11 +179,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     timestamp: new Date().toISOString()
                 });
 
-                alert("Your issue has been reported. Our team will review it soon.");
+                showToast("Your issue has been reported successfully!", "success"); // TOAST ADDED
                 reportForm.reset();
                 toggleReportModal(false);
             } catch (err) {
-                alert("Submission Failed: " + err.message);
+                showToast("Submission Failed: " + err.message, "error"); // TOAST ADDED
             } finally {
                 btn.innerText = "Submit Report";
                 btn.disabled = false;
@@ -138,7 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.disabled = true;
 
             try {
-                // Fetch firebase-config context dynamic modules dynamically
                 const { db, doc, setDoc } = await import('./firebase-config.js');
                 const contactId = "CON" + Math.random().toString(36).substring(2, 10).toUpperCase();
 
@@ -146,15 +208,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     contactId: contactId,
                     fullName: document.getElementById('contact-name').value,
                     email: document.getElementById('contact-email').value,
-                    userId: document.getElementById('contact-user-id').value || null, // Optional field
+                    userId: document.getElementById('contact-user-id').value || null,
                     message: document.getElementById('contact-message').value,
                     timestamp: new Date().toISOString()
                 });
 
-                alert("Your message has been sent. We will get back to you soon.");
+                showToast("Message sent! We will contact you soon.", "success"); // TOAST ADDED
                 contactForm.reset();
             } catch (err) {
-                alert("Message failed to send: " + err.message);
+                showToast("Failed to send: " + err.message, "error"); // TOAST ADDED
             } finally {
                 btn.innerText = "Send Message";
                 btn.disabled = false;
@@ -162,13 +224,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Add Worker Form Database Submission Handler (for admin.html)
+    // Add Worker Form Database Submission Handler
     const addWorkerForm = document.getElementById('add-worker-form');
     if (addWorkerForm) {
         addWorkerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('add-worker-submit-btn');
-            btn.innerText = "Adding Worker...";
+            btn.innerText = "Processing..."; // LOADING TEXT
             btn.disabled = true;
 
             try {
@@ -197,29 +259,32 @@ document.addEventListener("DOMContentLoaded", () => {
                     address: document.getElementById('worker-address').value,
                     photoBase64: photoBase64,
                     aadhaarBase64: aadhaarBase64,
-                    status: 'active', // Default status
+                    status: 'active',
                     createdAt: new Date().toISOString()
                 });
 
-                alert("Worker added successfully!");
+                showToast("Worker added successfully!", "success"); // TOAST ADDED
                 addWorkerForm.reset();
                 document.getElementById('worker-photo-preview').classList.add('hidden');
                 document.getElementById('worker-aadhaar-preview').classList.add('hidden');
-                // Reload worker data in admin panel if it's visible
                 if (document.getElementById('workers-grid-box') && !document.getElementById('workers-grid-box').classList.contains('hidden')) {
-                    // Assuming loadSystemData is a global function or accessible
                     if (typeof window.loadSystemData === 'function') {
                         window.loadSystemData();
                     }
                 }
             } catch (err) {
-                alert("Failed to add worker: " + err.message);
+                showToast("Failed to add worker: " + err.message, "error"); // TOAST ADDED
             } finally {
                 btn.innerText = "Add Worker";
                 btn.disabled = false;
             }
         });
     }
+
+    // 3. Add the Google Translate script to the body
+    const translateScript = document.createElement('script');
+    translateScript.src = "https://translate.google.com/translate_a/element.js?cb=loadGoogleTranslate";
+    document.body.appendChild(translateScript);
 });
 
 function convertFileToBase64(file) {
