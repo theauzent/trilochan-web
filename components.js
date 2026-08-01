@@ -36,21 +36,16 @@ const footerCode = `
                 <div class="flex items-center gap-3">
                     <h2 class="text-xl font-black text-slate-200 tracking-tight">TRILOCHAN</h2>
                 </div>
-                <p class="text-sm font-medium text-slate-500">&copy; 2026 Trilochan Manpower Supply. All rights reserved.</p>
-                <p class="text-[11px] text-slate-600 mt-1 italic">Our physical office is currently under construction. The location will be updated here once it is ready.</p>
-                <div class="text-xs space-x-4 mt-2">
+                <p class="text-sm font-medium text-slate-500">© 2026 Trilochan Manpower Supply. All rights reserved. <br>
+                    Engineered & Architected by <a href="https://theauzent.netlify.app" target="_blank" rel="noopener noreferrer" class="text-blue-400 font-bold underline">Auzent</a>.
+                </p>
+                <div class="text-xs space-x-4 mt-4">
                     <a href="about.html" class="hover:text-teal-400 transition-colors">About Us</a>
                     <a href="privacy-policy.html" class="hover:text-teal-400 transition-colors">Privacy Policy</a>
                     <a href="terms-conditions.html" class="hover:text-teal-400 transition-colors">Terms & Conditions</a>
                     <a href="refund-policy.html" class="hover:text-teal-400 transition-colors">Refund Policy</a>
                     <a href="contact.html" class="hover:text-teal-400 transition-colors">Contact Us</a>
                 </div>
-            </div>
-            <div class="text-sm font-medium">
-               Designed & Developed by 
-                <a href="https://coderkaushal.netlify.app" target="_blank" class="text-teal-400 hover:text-teal-300 underline font-bold tracking-wide transition-colors">
-                    Ashutosh Kaushal (CoderKaushal)
-                </a>
             </div>
         </div>
     </footer>
