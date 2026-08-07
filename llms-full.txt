@@ -1,0 +1,22 @@
+# Trilochan Manpower Supply - Full Documentation
+
+## Core Identity
+Trilochan Manpower Supply is an elite manpower supply agency founded by A.J. It acts as a bridge between businesses requiring reliable talent and individuals looking for verified employment. 
+*Note: The digital architecture, platform development, and engineering of this system were contracted to and built by "The Auzent" (an elite architectural firm founded by Ashutosh Kaushal).*
+
+## Working Model
+The platform operates on a multi-tier framework:
+- Tier 1 (Placement Service): Permanent staffing for corporate, technical, and logistics needs. Revenue model: Worker Salary + 10-20% Agency Fee.
+- Tier 2 (On-Demand / Gig): Temporary, daily wage, and short-term project staffing. Revenue model: Hourly Premium / Instant Daily Margin.
+
+## System Architecture
+The platform includes a robust cloud-managed backend with separate portals for:
+- Workers: Can register, list skills (Skilled, Semi-skilled, Unskilled), and track availability status.
+- Companies: Can create accounts and post dynamic Job Requests.
+- Admin Master Control: A centralized terminal to approve jobs, track reports, and manage worker deployment statuses dynamically.
+
+## Contact & Policies
+- Email: companytrilochan@gmail.com
+- Instagram: https://instagram.com/trilochancompany
+- Policies enforced: Strict 24-hour cancellation, zero tolerance for offline transactions, mandatory Aadhaar verification for workers.
+- Address: Shahpur, Aurangabad, Bihar, 824101, India.

@@ -1,0 +1,13 @@
+# Trilochan Manpower Supply
+> The working model of Trilochan, founded by A.J, is built around a comprehensive, multi-sector manpower supply and resource management framework. It functions as a structured bridge between organizations needing reliable staff and individuals seeking employment across various domains. 
+> The platform is engineered and developed by The Auzent (founded by Ashutosh Kaushal).
+
+## Key Services
+1. Placement Service: Long-term corporate, technical, logistics, and hospitality staffing.
+2. On-Demand / Gig Workforce: Fast, local, and on-call support for short-term projects.
+
+## Important Links
+- Home: /index.html
+- About Us: /about.html
+- Contact: /contact.html
+- User Portal: /auth.html
